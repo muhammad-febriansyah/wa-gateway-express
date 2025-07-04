@@ -6,8 +6,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "whatsapp",
+    "gateway",
+    "baileys",
+    "api",
+    "nodejs"
+  ],
+  "author": "Muhammad Febriansyah",
   "license": "ISC",
   "description": "",
   "dependencies": {

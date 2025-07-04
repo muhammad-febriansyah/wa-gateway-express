@@ -1,20 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WhatsApp Gateway</title>
+    <title>Gateway WhatsApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       body {
-        font-family: "Inter", sans-serif;
+        font-family: "Poppins", sans-serif;
+      }
+      .whatsapp-gradient {
+        background: linear-gradient(
+          135deg,
+          #25d366 0%,
+          #128c7e 50%,
+          #075e54 100%
+        );
+      }
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
       .loading-spinner {
-        border: 4px solid rgba(0, 0, 0, 0.1);
-        border-left-color: #3b82f6;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-left-color: #25d366;
         border-radius: 50%;
-        width: 32px;
-        height: 32px;
+        width: 40px;
+        height: 40px;
         animation: spin 1s linear infinite;
       }
       @keyframes spin {
@@ -25,65 +45,651 @@
           transform: rotate(360deg);
         }
       }
+      .fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .slide-in-left {
+        animation: slideInLeft 0.8s ease-out;
+      }
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .slide-in-right {
+        animation: slideInRight 0.8s ease-out;
+      }
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .pulse-green {
+        animation: pulseGreen 2s ease-in-out infinite;
+      }
+      @keyframes pulseGreen {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 20px rgba(37, 211, 102, 0);
+        }
+      }
+      .status-card {
+        transition: all 0.3s ease;
+      }
+      .status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+      .animation-container {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .loading-animation {
+        width: 80px;
+        height: 80px;
+        border: 6px solid rgba(255, 255, 255, 0.3);
+        border-left-color: #25d366;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      .qr-scan-animation {
+        width: 120px;
+        height: 120px;
+        border: 3px solid #25d366;
+        border-radius: 15px;
+        position: relative;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .qr-scan-animation::before {
+        content: "";
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #25d366, transparent);
+        animation: scan 2s ease-in-out infinite;
+      }
+      .qr-scan-animation::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #25d366;
+        border-radius: 3px;
+      }
+      @keyframes scan {
+        0% {
+          top: 10px;
+          opacity: 1;
+        }
+        50% {
+          top: 50%;
+          opacity: 0.7;
+        }
+        100% {
+          top: calc(100% - 13px);
+          opacity: 1;
+        }
+      }
+      .success-animation {
+        width: 100px;
+        height: 100px;
+        border: 4px solid #25d366;
+        border-radius: 50%;
+        position: relative;
+        animation: successPulse 1.5s ease-in-out;
+      }
+      .success-animation::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+        width: 30px;
+        height: 15px;
+        border-right: 4px solid #25d366;
+        border-bottom: 4px solid #25d366;
+        animation: checkmark 0.8s ease-in-out 0.3s both;
+      }
+      @keyframes successPulse {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      /* --- PERBAIKAN CHECKMARK --- */
+      @keyframes checkmark {
+        0% {
+          width: 0;
+          height: 0;
+          border-right-width: 0;
+          border-bottom-width: 0;
+        }
+        /* Gambar dulu kaki pendek (vertikal) */
+        50% {
+          width: 0;
+          height: 15px;
+          border-right-width: 4px;
+          border-bottom-width: 0;
+        }
+        /* Lalu gambar kaki panjang (horizontal) */
+        100% {
+          width: 30px;
+          height: 15px;
+          border-right-width: 4px;
+          border-bottom-width: 4px;
+        }
+      }
+      .error-animation {
+        width: 100px;
+        height: 100px;
+        border: 4px solid #ef4444;
+        border-radius: 50%;
+        position: relative;
+        animation: errorShake 0.8s ease-in-out;
+      }
+      .error-animation::before,
+      .error-animation::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 4px;
+        height: 40px;
+        background: #ef4444;
+        transform-origin: center;
+      }
+      .error-animation::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      .error-animation::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+      @keyframes errorShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+      }
+      .waiting-animation {
+        width: 80px;
+        height: 80px;
+        position: relative;
+      }
+      .waiting-animation::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #25d366;
+        border-radius: 50%;
+        animation: bounce1 1.5s ease-in-out infinite;
+      }
+      .waiting-animation::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #25d366;
+        border-radius: 50%;
+        left: 30px;
+        animation: bounce2 1.5s ease-in-out infinite 0.3s;
+      }
+      .waiting-animation .dot3 {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #25d366;
+        border-radius: 50%;
+        left: 60px;
+        animation: bounce3 1.5s ease-in-out infinite 0.6s;
+      }
+      @keyframes bounce1 {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-20px);
+        }
+      }
+      @keyframes bounce2 {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-20px);
+        }
+      }
+      @keyframes bounce3 {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-20px);
+        }
+      }
+      .connection-animation {
+        width: 100px;
+        height: 100px;
+        position: relative;
+      }
+      .connection-animation::before {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border: 4px solid #25d366;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: connectionPulse 2s ease-in-out infinite;
+      }
+      .connection-animation::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #25d366;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      @keyframes connectionPulse {
+        0% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(2);
+          opacity: 0;
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.8;
+        }
+      }
     </style>
   </head>
-  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
-      <h1 class="text-2xl font-bold text-gray-800 mb-4">WhatsApp Gateway</h1>
-      <div id="status-container" class="mb-6 flex flex-col items-center">
-        <img
-          id="qr-status-icon"
-          src="./assets/loader.gif"
-          alt="Status Icon"
-          class="w-12 h-12 mb-4"
-        />
-        <p id="log" class="text-gray-600 text-lg">Connecting to WhatsApp...</p>
-        <img
-          id="qrcode"
-          src=""
-          alt="QR Code"
-          class="mt-4 rounded-lg shadow-md"
-          style="width: 250px; height: 250px; display: none"
-        />
+  <body class="whatsapp-gradient min-h-screen flex flex-col">
+    <div class="container mx-auto px-4 py-8 flex-grow">
+      <div class="text-center mb-12 fade-in">
+        <div
+          class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6 shadow-lg pulse-green"
+        >
+          <svg
+            class="w-10 h-10 text-green-500"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.787"
+            />
+          </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-white mb-3">Gateway WhatsApp</h1>
+        <p class="text-white/90 text-lg">
+          Integrasi Mudah untuk Pengiriman Notifikasi WhatsApp
+        </p>
       </div>
-
-      <div class="border-t border-gray-200 pt-4 text-sm text-gray-500">
-        <p>Scan QR code above with your WhatsApp app.</p>
-        <p>Or check server console for logs.</p>
+      <div class="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+        <div class="flex-1 slide-in-left">
+          <div class="glass-effect rounded-2xl p-8 status-card">
+            <div class="text-center mb-6">
+              <h2 class="text-2xl font-semibold text-white mb-4">
+                Status Koneksi
+              </h2>
+              <div class="flex justify-center mb-6">
+                <div id="animation-container" class="animation-container">
+                  <div class="loading-animation"></div>
+                </div>
+              </div>
+              <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-6">
+                <p id="log" class="text-white text-lg font-medium">
+                  Menyambungkan ke WhatsApp...
+                </p>
+              </div>
+              <div class="flex items-center justify-center space-x-3">
+                <div
+                  id="connection-dot"
+                  class="w-4 h-4 bg-yellow-400 rounded-full animate-pulse"
+                ></div>
+                <span id="connection-text" class="text-white/90 font-medium"
+                  >Inisialisasi...</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="glass-effect rounded-2xl p-6 mt-6">
+            <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Fitur
+            </h3>
+            <div class="space-y-3 text-white/80">
+              <div class="flex items-center">
+                <span
+                  class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"
+                ></span>
+                Koneksi Real-time dengan Kode QR
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"
+                ></span>
+                Pengiriman Pesan Teks & Media (API)
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"
+                ></span>
+                Mengirim Pesan ke Grup
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"
+                ></span>
+                Mendapatkan Daftar Grup
+              </div>
+              <div class="flex items-center">
+                <span
+                  class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"
+                ></span>
+                Bot & Balasan Otomatis Sederhana
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 slide-in-right">
+          <div class="glass-effect rounded-2xl p-8 status-card">
+            <div class="text-center">
+              <h2 class="text-2xl font-semibold text-white mb-6">
+                Pindai Kode QR
+              </h2>
+              <div class="flex justify-center mb-6">
+                <div class="relative">
+                  <div
+                    id="qr-placeholder"
+                    class="flex items-center justify-center w-80 h-80 bg-white/10 rounded-2xl border-2 border-dashed border-white/30"
+                  >
+                    <div class="text-center">
+                      <div class="loading-spinner mx-auto mb-4"></div>
+                      <p class="text-white/80">Menghasilkan Kode QR...</p>
+                    </div>
+                  </div>
+                  <img
+                    id="qrcode"
+                    src=""
+                    alt="Kode QR"
+                    class="w-80 h-80 rounded-2xl shadow-2xl border-4 border-white/20"
+                    style="display: none"
+                  />
+                </div>
+              </div>
+              <div
+                id="qr-status-icon"
+                class="w-16 h-16 rounded-full shadow-lg mx-auto mb-4 flex items-center justify-center bg-white/10"
+                style="display: none"
+              >
+                <div class="loading-spinner w-8 h-8"></div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-effect rounded-2xl p-6 mt-6">
+            <h3 class="text-xl font-semibold text-white mb-4 flex items-center">
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Cara Terhubung
+            </h3>
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <div
+                  class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-white font-bold text-sm">1</span>
+                </div>
+                <div>
+                  <h4 class="text-white font-medium">Buka WhatsApp</h4>
+                  <p class="text-white/80 text-sm">
+                    Buka aplikasi WhatsApp di ponsel Anda
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div
+                  class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-white font-bold text-sm">2</span>
+                </div>
+                <div>
+                  <h4 class="text-white font-medium">Pindai Kode QR</h4>
+                  <p class="text-white/80 text-sm">
+                    Gunakan pemindai QR di pengaturan WhatsApp
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start space-x-3">
+                <div
+                  class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-white font-bold text-sm">3</span>
+                </div>
+                <div>
+                  <h4 class="text-white font-medium">Mulai Mengirim Pesan</h4>
+                  <p class="text-white/80 text-sm">
+                    Mulai gunakan gateway setelah terhubung
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <footer class="py-4">
+      <p class="text-center text-sm text-white/70">
+        Created by Muhammad Febriansyah
+      </p>
+    </footer>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
       const qrcodeImg = document.getElementById("qrcode");
+      const qrPlaceholder = document.getElementById("qr-placeholder");
       const logDiv = document.getElementById("log");
       const qrStatusIcon = document.getElementById("qr-status-icon");
+      const connectionDot = document.getElementById("connection-dot");
+      const connectionText = document.getElementById("connection-text");
+      const animationContainer = document.getElementById("animation-container");
+
+      function showAnimation(type) {
+        let animationHTML = "";
+
+        switch (type) {
+          case "loading":
+            animationHTML = '<div class="loading-animation"></div>';
+            break;
+          case "qr-scan":
+            animationHTML = '<div class="qr-scan-animation"></div>';
+            break;
+          case "success":
+            animationHTML = '<div class="success-animation"></div>';
+            break;
+          case "error":
+            animationHTML = '<div class="error-animation"></div>';
+            break;
+          case "waiting":
+            animationHTML =
+              '<div class="waiting-animation"><div class="dot3"></div></div>';
+            break;
+          case "connection":
+            animationHTML = '<div class="connection-animation"></div>';
+            break;
+          default:
+            animationHTML = '<div class="loading-animation"></div>';
+        }
+
+        animationContainer.innerHTML = animationHTML;
+      }
+
+      function updateConnectionStatus(status, color, text) {
+        connectionDot.className = `w-4 h-4 rounded-full ${color}`;
+        connectionText.textContent = text;
+      }
 
       socket.on("qr", (url) => {
         qrcodeImg.src = url;
-        qrcodeImg.style.display = "block"; // Tampilkan QR Code
-        qrStatusIcon.style.display = "none"; // Sembunyikan status icon
-        logDiv.textContent = "QR Code received, please scan!";
+        qrcodeImg.style.display = "block";
+        qrPlaceholder.style.display = "none";
+        qrcodeImg.classList.add("fade-in");
+        qrStatusIcon.style.display = "none";
+        logDiv.textContent = "Kode QR dibuat! Silakan pindai dengan WhatsApp";
+        updateConnectionStatus(
+          "qr",
+          "bg-blue-400 animate-pulse",
+          "Pindai Kode QR"
+        );
+        showAnimation("qr-scan");
       });
 
       socket.on("log", (message) => {
-        logDiv.textContent = message;
+        if (message.includes("ready") || message.includes("authenticated")) {
+          logDiv.textContent = "WhatsApp siap dan terautentikasi!";
+          updateConnectionStatus("connected", "bg-green-400", "Terhubung");
+          showAnimation("success");
+        } else if (message.includes("disconnected")) {
+          logDiv.textContent = "Koneksi WhatsApp terputus.";
+          updateConnectionStatus("disconnected", "bg-red-400", "Terputus");
+          showAnimation("error");
+        } else if (message.includes("connecting")) {
+          logDiv.textContent = "Sedang menyambungkan ke WhatsApp...";
+          updateConnectionStatus(
+            "connecting",
+            "bg-yellow-400 animate-pulse",
+            "Menyambungkan..."
+          );
+          showAnimation("loading");
+        } else {
+          logDiv.textContent = message;
+        }
       });
 
       socket.on("qrstatus", (imageUrl) => {
-        qrStatusIcon.src = imageUrl;
-        qrStatusIcon.style.display = "block"; // Tampilkan status icon
-        qrcodeImg.style.display = "none"; // Sembunyikan QR Code
+        qrStatusIcon.style.display = "block";
+        qrcodeImg.style.display = "none";
+        qrPlaceholder.style.display = "flex";
+        qrcodeImg.classList.remove("fade-in");
+        logDiv.textContent = "Menunggu pemindaian Kode QR...";
+        showAnimation("waiting");
       });
 
-      // Set initial status to loading if no QR or connected status is received immediately
       socket.on("connect", () => {
-        if (qrStatusIcon.src.includes("loader.gif")) {
-          // Only if still on initial loader
-          logDiv.textContent =
-            "Connected to server, waiting for WhatsApp status...";
-        }
+        updateConnectionStatus(
+          "server-connected",
+          "bg-green-400",
+          "Server Terhubung"
+        );
+        logDiv.textContent =
+          "Terhubung ke server, menginisialisasi WhatsApp...";
+        showAnimation("connection");
+      });
+
+      socket.on("disconnect", () => {
+        updateConnectionStatus(
+          "server-disconnected",
+          "bg-red-400",
+          "Server Terputus"
+        );
+        logDiv.textContent =
+          "Terputus dari server, mencoba menyambungkan kembali...";
+        showAnimation("error");
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        showAnimation("loading");
       });
     </script>
   </body>
